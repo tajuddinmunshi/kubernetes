@@ -1,0 +1,141 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  name: tajuddinmunshi.com
+spec:
+  api:
+    loadBalancer:
+      additionalSecurityGroups:
+      - sg-005cf78e464d96472
+      type: Public
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://dev-kopsvvvvv/tajuddinmunshi.com
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: master-eu-west-2a
+      name: a
+    - instanceGroup: master-eu-west-2b
+      name: b
+    - instanceGroup: master-eu-west-2c
+      name: c
+    name: main
+  - etcdMembers:
+    - instanceGroup: master-eu-west-2a
+      name: a
+    - instanceGroup: master-eu-west-2b
+      name: b
+    - instanceGroup: master-eu-west-2c
+      name: c
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesVersion: 1.10.6
+  masterPublicName: api.tajuddinmunshi.com
+  networkCIDR: 10.0.0.0/16
+  networkID: vpc-0446a3317146482f8
+  networking:
+    canal: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  subnets:
+  - id: subnet-0f83aaa78093386f3
+    name: utility-eu-west-2a
+    type: Utility
+    zone: eu-west-2a
+  - id: subnet-038650217a19af8da
+    name: utility-eu-west-2b
+    type: Utility
+    zone: eu-west-2b
+  - id: subnet-032a506f23b11947c
+    name: utility-eu-west-2c
+    type: Utility
+    zone: eu-west-2c
+  - egress: nat-093c54154c7ef8bbc
+    id: subnet-0ff8a5f1ef972fb1c
+    name: eu-west-2a
+    type: Private
+    zone: eu-west-2a
+  - egress: nat-0cee1c34aaa7be4b0
+    id: subnet-0d0d06a790b4ee7a4
+    name: eu-west-2b
+    type: Private
+    zone: eu-west-2b
+  - egress: nat-03a5a0984508f1f65
+    id: subnet-04fea41334cc65992
+    name: eu-west-2c
+    type: Private
+    zone: eu-west-2c
+  topology:
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: tajuddinmunshi.com
+  name: master-eu-west-2a
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - eu-west-2a
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: tajuddinmunshi.com
+  name: master-eu-west-2b
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - eu-west-2b
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: tajuddinmunshi.com
+  name: master-eu-west-2c
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - eu-west-2c
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: tajuddinmunshi.com
+  name: nodes
+spec:
+  image: kope.io/k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17
+  kubernetesVersion: 1.10.6
+  machineType: t2.small
+  maxSize: 2
+  minSize: 1
+  role: Node
+  subnets:
+  - eu-west-2a
+  - eu-west-2b
+  - eu-west-2c
